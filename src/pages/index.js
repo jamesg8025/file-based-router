@@ -32,4 +32,4 @@ exports.handler = async (req, res) => {
             </body>
         </html>
     `);
-}
+};
