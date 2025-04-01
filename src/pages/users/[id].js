@@ -53,7 +53,7 @@ exports.handler = (req, res) => {
                 <h1>User Details</h1>
                 <div class="user-card">
                     <h2>${user.name}</h2>
-                    <p>strong>ID:</strong> ${user.id}</p>
+                    <p><strong>ID:</strong> ${user.id}</p>
                     <p><strong>Email:</strong> ${user.email}</p>
                     <p><strong>Role:</strong> ${user.role}</p>
                 </div>
