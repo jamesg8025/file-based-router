@@ -2,10 +2,18 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 
+let mainLayout;
+try {
+    mainLayout = require(path.resolve('src/layouts/main.js'));
+} catch (error) {
+        mainLayout = null;
+}
+
 /**
  * Set up router
  * @param {object} app - Express app instance
  */
+
 function setupRouter(app) {
     // Get all .js files in the pages directory
     const pageFiles = glob.sync('src/pages/**/*.js');
@@ -51,7 +59,23 @@ function setupRouter(app) {
 
                 // Check if the module exports a handler function
                 if (typeof pageModule.handler === 'function') {
-                    return pageModule.handler(req, res);
+
+                    // Create a custom response function that supports layouts
+                    const sendResponse = (content, options = {}) => {
+                        // If layout is explicitly set to false, don't use layout
+                        if (options.layout === false) {
+                            return res.send(content);
+                        }
+
+                        // If layout exists and mainLayout isn't set to false, wrap the layout
+                        if (mainLayout && pageModule.useLayout !== false) {
+                            return res.send(mainLayout(content, options));
+                        }
+
+                        // Otherwise, just send the content as is
+                        res.send(content);
+                    };
+                    return pageModule.handler(req, { ...res, sendWithLayout: sendResponse });
                 }
 
                 // If no handler function, return the contents as JSON
@@ -65,6 +89,16 @@ function setupRouter(app) {
 
     // Add a 404 handler for routes that don't match
     app.use((req, res) => {
+        const notFoundContent = `
+            <h1>404 - Not Found</h1>
+            <p>The page you're looking for doesn't exist.</p>
+            <a href="/" style="display: inline-block; margin-top: 20px;">← Back to Home</a>
+        `;
+        // If mainLayout is available, use it
+        if (mainLayout) {
+            return res.status(404).send(mainLayout(notFoundContent, { title: '404 Not Found' }));
+        }
+
         res.status(404).send(
             `<html>
                 <head>
@@ -90,9 +124,7 @@ function setupRouter(app) {
                     </style>
                 </head>
                 <body>
-                    <h1>404 - Not Found</h1>
-                    <p>The page you're looking for doesn't exist.</p>
-                    <a href="/" class="back-link">Back to Home</a>
+                    ${notFoundContent}
                 </body>
             </html>
         `);
