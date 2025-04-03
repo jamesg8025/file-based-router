@@ -1,7 +1,8 @@
 /**
  * Main layout component
  */
-function mainLayout(content, {title = 'My File Router', } = {}) {
+
+function mainLayout(content, { title = 'My File Router' } = {}) {
     return `
         <html>
             <head>
@@ -61,7 +62,7 @@ function mainLayout(content, {title = 'My File Router', } = {}) {
             </body>
         </html>
     `;
-}
+};
 
 // Export the mainLayout function
-module.exports = { setupRouter };
+module.exports = mainLayout;
