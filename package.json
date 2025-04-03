@@ -1,14 +1,23 @@
 {
   "name": "file-router-project",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "A simple file-based router implementation",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "file-router",
+    "express",
+    "router",
+    "file-system",
+    "dynamic-routing",
+    "nodejs",
+    "file-based"
+  ],
+  "author": "James Gonzalez",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.21.2",
     "fs-extra": "^11.3.0",
