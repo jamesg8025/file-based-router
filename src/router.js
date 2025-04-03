@@ -2,12 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 
-let mainLayout;
-try {
-    mainLayout = require(path.resolve('src/layouts/main.js'));
-} catch (error) {
-        mainLayout = null;
-}
+
 
 /**
  * Set up router
@@ -15,6 +10,17 @@ try {
  */
 
 function setupRouter(app) {
+
+    let mainLayout;
+    try {
+        mainLayout = require(path.resolve('src/layouts/main.js')).mainLayout;
+        if (typeof mainLayout !== 'function') {
+            throw new Error('mainLayout is not a function');
+        }
+    } catch (error) {
+            mainLayout = null;
+    }
+
     // Get all .js files in the pages directory
     const pageFiles = glob.sync('src/pages/**/*.js');
 
@@ -67,7 +73,7 @@ function setupRouter(app) {
                             return res.send(content);
                         }
 
-                        // If layout exists and mainLayout isn't set to false, wrap the layout
+                        // If layout exists and useLayout isn't set to false, wrap the content
                         if (mainLayout && pageModule.useLayout !== false) {
                             return res.send(mainLayout(content, options));
                         }
@@ -75,6 +81,7 @@ function setupRouter(app) {
                         // Otherwise, just send the content as is
                         res.send(content);
                     };
+                    // Call the handler with custom response function
                     return pageModule.handler(req, { ...res, sendWithLayout: sendResponse });
                 }
 

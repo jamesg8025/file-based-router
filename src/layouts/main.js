@@ -62,3 +62,6 @@ function mainLayout(content, {title = 'My File Router', } = {}) {
         </html>
     `;
 }
+
+// Export the mainLayout function
+module.exports = { setupRouter };

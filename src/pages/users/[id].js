@@ -18,47 +18,21 @@ exports.handler = (req, res) => {
         return res.status(404).send('User not found');
     }
 
-    res.send(`
-        <html>
-            <head>
-                <title>${user.name}</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        max-width: 800px;
-                        margin: 0 auto;
-                        padding: 20px;
-                    }
-                    nav {
-                        margin-bottom: 20px;
-                    }
-                    .user-card {
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        padding: 20px;
-                        margin-bottom: 20px;
-                    }
-                    .back-link {
-                        display: inline-block;
-                        margin-top: 20px;
-                    }
-                </style>
-            </head>
-            <body>
-                <nav>
-                    <a href="/">Home</a>
-                    <a href="/about">About</a>
-                    <a href="/users">Users</a>
-                </nav>
-                <h1>User Details</h1>
-                <div class="user-card">
-                    <h2>${user.name}</h2>
-                    <p><strong>ID:</strong> ${user.id}</p>
-                    <p><strong>Email:</strong> ${user.email}</p>
-                    <p><strong>Role:</strong> ${user.role}</p>
-                </div>
-                <a href="/users" class="back-link">Back to Users</a>
-            </body>
-        </html>
-    `);
+    const content = `
+        <h1>User Details</h1>
+        <div class="user-card" style="border: 1px solid #ccc; border-radius: 5px; padding: 20px; margin-top: 20px;">
+        <h2>${user.name}</h2>
+        <p><strong>ID:</strong> ${user.id}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Role:</strong> ${user.role}</p>
+        </div>
+        <a href="/users" style="display: inline-block; margin-top: 20px;">← Back to Users</a>
+    `;
+
+    // If layout is available, use it
+    if (res.sendWithLayout) {
+        res.sendWithLayout(content, { title: `${user.name} - My File Router` });
+    } else {
+        res.send(content);
+    }
 }
